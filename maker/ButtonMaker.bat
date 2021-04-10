@@ -35,5 +35,3 @@ cscript /nologo %SCRIPT%
 del %SCRIPT%
 
 move %button_name%.lnk ../..
-
-pause 
