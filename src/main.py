@@ -32,7 +32,7 @@ print("> setup complete.")
 
 # Call functions & loop
 print("> publishing data...")
-client.publish(mqtt_topic, mqtt_data)
+client.publish(mqtt_topic, mqtt_data, False)
 time.sleep(2)
 
 # End of program, clean shutdown
