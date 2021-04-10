@@ -17,21 +17,27 @@ set user_pass=your-broker-password
 
 rem ########## FILL IN VARIABLES ABOVE ##########
 
-mkdir "compiled"
-cd "compiled"
-call pyinstaller -w -F "%cd%\..\..\src\main.py"
+if exist "%cd%\compiled\dist\main.exe" (
+  echo existing compiled main found.
+  cd "compiled"
+) else (
+  echo need to compile the main.py.
+  echo y|rmdir /s "compiled"
+  mkdir "compiled"
+  cd "compiled"
+  call pyinstaller -w -F "%cd%\..\src\main.py"
+)
 
 cd dist
-ren main.exe %button_name%.exe
 
 set SCRIPT="%TEMP%\%RANDOM%-%RANDOM%-%RANDOM%-%RANDOM%.vbs"
 echo Set oWS = WScript.CreateObject("WScript.Shell") >> %SCRIPT%
 echo sLinkFile = "%cd%\%button_name%.lnk" >> %SCRIPT%
 echo Set oLink = oWS.CreateShortcut(sLinkFile) >> %SCRIPT%
-echo oLink.TargetPath = "%cd%\%button_name%.exe" >> %SCRIPT%
+echo oLink.TargetPath = "%cd%\main.exe" >> %SCRIPT%
 echo oLink.Arguments = "%device_name% %host_address% %user_login% %user_pass% %mqtt_topic% %mqtt_data%" >> %SCRIPT%
 echo oLink.Save >> %SCRIPT%
 cscript /nologo %SCRIPT%
 del %SCRIPT%
 
-move %button_name%.lnk ../..
+move /Y %button_name%.lnk ../..
